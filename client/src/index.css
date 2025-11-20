@@ -1,0 +1,21 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    body {
+        @apply bg-gray-50 text-gray-900 font-['Outfit'] antialiased selection:bg-orange-500 selection:text-white;
+    }
+}
+
+@layer utilities {
+    .glass {
+        @apply bg-white/70 backdrop-blur-md border border-gray-200/50 shadow-sm;
+    }
+
+    .glass-dark {
+        @apply bg-gray-900/70 backdrop-blur-md border border-white/10;
+    }
+}
