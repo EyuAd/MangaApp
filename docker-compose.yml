@@ -1,0 +1,38 @@
+version: "3.9"
+
+services:
+  server:
+    build: ./server
+    container_name: manga-server
+    restart: unless-stopped
+    env_file:
+      - ./server/.env
+    ports:
+      - "5001:5001"
+    # depends_on:
+    #   - mongo
+
+  client:
+    build: ./client
+    container_name: manga-client
+    restart: unless-stopped
+    ports:
+      - "5173:5173"
+    environment:
+      # adjust this to whatever URL Cloudflared exposes for the backend in prod
+      VITE_API_URL: "http://localhost:5001/api"
+
+#   mongo:
+#     image: mongo:7
+#     container_name: manga-mongo
+#     restart: unless-stopped
+#     environment:
+#       MONGO_INITDB_ROOT_USERNAME: root
+#       MONGO_INITDB_ROOT_PASSWORD: example
+#     volumes:
+#       - mongo_data:/data/db
+#     ports:
+#       - "27017:27017"   # optional, for local debugging
+
+# volumes:
+#   mongo_data:
