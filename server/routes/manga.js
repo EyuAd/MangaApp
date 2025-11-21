@@ -1,11 +1,12 @@
-const express = require('express');
-const axios = require('axios');
-const router = express.Router();
+import { Router } from 'express';
+const mangaRouter = Router();
+import { requireAuth } from '../middleware/auth.js';
+import axios from 'axios';
 
 const BASE_URL = 'https://api.mangadex.org';
 
 
-router.get('/', async (req, res) => {
+mangaRouter.get('/', requireAuth, async (req, res) => {
     try {
         const { title, limit = 20, offset = 0 } = req.query;
         const params = {
@@ -23,7 +24,7 @@ router.get('/', async (req, res) => {
 });
 
 
-router.get('/chapter/:id', async (req, res) => {
+mangaRouter.get('/chapter/:id', requireAuth, async (req, res) => {
     try {
         const { id } = req.params;
         const response = await axios.get(`${BASE_URL}/at-home/server/${id}`);
@@ -34,7 +35,7 @@ router.get('/chapter/:id', async (req, res) => {
 });
 
 
-router.get('/:id', async (req, res) => {
+mangaRouter.get('/:id', requireAuth, async (req, res) => {
     try {
         const { id } = req.params;
         const response = await axios.get(`${BASE_URL}/manga/${id}?includes[]=cover_art&includes[]=author&includes[]=artist`);
@@ -45,7 +46,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // Get Manga Feed (Chapters)
-router.get('/:id/feed', async (req, res) => {
+mangaRouter.get('/:id/feed', requireAuth, async (req, res) => {
     try {
         const { id } = req.params;
         const { limit = 100, offset = 0, translatedLanguage = ['en'] } = req.query;
@@ -63,4 +64,4 @@ router.get('/:id/feed', async (req, res) => {
     }
 });
 
-module.exports = router;
+export default mangaRouter;

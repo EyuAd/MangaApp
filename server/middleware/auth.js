@@ -1,9 +1,10 @@
-const { auth } = require('../lib/auth');
+import { auth } from '../lib/auth.js';
+import { fromNodeHeaders } from 'better-auth/node';
 
-module.exports = async function (req, res, next) {
+export async function requireAuth(req, res, next) {
     try {
         const session = await auth.api.getSession({
-            headers: new Headers(req.headers)
+            headers: fromNodeHeaders(req.headers)
         });
 
         if (!session) {

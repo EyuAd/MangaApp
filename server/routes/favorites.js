@@ -1,10 +1,11 @@
-const express = require('express');
-const Favorite = require('../models/Favorite');
-const auth = require('../middleware/auth');
-const router = express.Router();
+import { Router } from 'express';
+import Favorite from '../models/Favorite.js';
+import { requireAuth } from '../middleware/auth.js';
+
+const favRouter = Router();
 
 
-router.get('/', auth, async (req, res) => {
+favRouter.get('/', requireAuth, async (req, res) => {
     try {
         const favorites = await Favorite.find({ user: req.user.id }).sort({ addedAt: -1 });
         res.json(favorites);
@@ -14,7 +15,7 @@ router.get('/', auth, async (req, res) => {
 });
 
 
-router.post('/', auth, async (req, res) => {
+favRouter.post('/', requireAuth, async (req, res) => {
     try {
         const { mangaId, title, coverUrl } = req.body;
         const newFavorite = new Favorite({
@@ -34,7 +35,7 @@ router.post('/', auth, async (req, res) => {
 });
 
 
-router.delete('/:mangaId', auth, async (req, res) => {
+favRouter.delete('/:mangaId', requireAuth, async (req, res) => {
     try {
         const { mangaId } = req.params;
         await Favorite.findOneAndDelete({ mangaId, user: req.user.id });
@@ -45,7 +46,7 @@ router.delete('/:mangaId', auth, async (req, res) => {
 });
 
 
-router.get('/check/:mangaId', auth, async (req, res) => {
+favRouter.get('/check/:mangaId', requireAuth, async (req, res) => {
     try {
         const { mangaId } = req.params;
         const exists = await Favorite.exists({ mangaId, user: req.user.id });
@@ -55,4 +56,4 @@ router.get('/check/:mangaId', auth, async (req, res) => {
     }
 });
 
-module.exports = router;
+export default favRouter;

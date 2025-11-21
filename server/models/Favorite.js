@@ -1,6 +1,6 @@
-const mongoose = require('mongoose');
+import { Schema, model } from 'mongoose';
 
-const FavoriteSchema = new mongoose.Schema({
+const FavoriteSchema = new Schema({
     user: {
         type: String,
         required: true
@@ -26,4 +26,4 @@ const FavoriteSchema = new mongoose.Schema({
 
 FavoriteSchema.index({ user: 1, mangaId: 1 }, { unique: true });
 
-module.exports = mongoose.model('Favorite', FavoriteSchema);
+export default model('Favorite', FavoriteSchema);

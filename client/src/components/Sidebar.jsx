@@ -57,7 +57,7 @@ const Sidebar = () => {
                     <div className="flex flex-col gap-4">
                         <div className="flex items-center gap-3 px-2">
                             <div className="w-10 h-10 rounded-full bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center text-white font-bold shadow-md">
-                                {user.username[0].toUpperCase()}
+                                {user.name[0].toUpperCase()}
                             </div>
                             <div className="hidden md:block overflow-hidden">
                                 <p className="text-gray-900 font-medium truncate">{user.username}</p>

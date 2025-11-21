@@ -109,7 +109,7 @@ const MangaDetails = () => {
                                 <ul className="divide-y divide-gray-200 max-h-[600px] overflow-y-auto custom-scrollbar">
                                     {chapters.map(chapter => (
                                         <li key={chapter.id} className="hover:bg-gray-50 transition">
-                                            <Link to={`/read/${chapter.id}`} className="block p-4 flex justify-between items-center group">
+                                            <Link to={`/read/${chapter.id}`} className="p-4 flex justify-between items-center group">
                                                 <div>
                                                     <span className="font-medium text-gray-900 group-hover:text-orange-600 transition-colors">
                                                         Chapter {chapter.attributes.chapter || 'Oneshot'}

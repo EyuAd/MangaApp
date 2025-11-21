@@ -1,12 +1,11 @@
-const express = require('express');
-const router = express.Router();
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const User = require('../models/User');
-const auth = require('../middleware/auth');
+import { Router } from 'express';
+const authRouter = Router();
+import { genSalt, hash, compare } from 'bcryptjs';
+import sign from 'jsonwebtoken';
+import User from '../models/User.js';
+import { requireAuth } from '../middleware/auth.js';
 
-
-router.post('/register', async (req, res) => {
+authRouter.post('/register', async (req, res) => {
     const { username, email, password } = req.body;
 
     try {
@@ -17,14 +16,14 @@ router.post('/register', async (req, res) => {
 
         user = new User({ username, email, password });
 
-        const salt = await bcrypt.genSalt(10);
-        user.password = await bcrypt.hash(password, salt);
+        const salt = await genSalt(10);
+        user.password = await hash(password, salt);
 
         await user.save();
 
         const payload = { user: { id: user.id } };
 
-        jwt.sign(
+        sign(
             payload,
             process.env.JWT_SECRET || 'secret',
             { expiresIn: 360000 },
@@ -40,7 +39,7 @@ router.post('/register', async (req, res) => {
 });
 
 // Login User
-router.post('/login', async (req, res) => {
+authRouter.post('/login', async (req, res) => {
     const { email, password } = req.body;
 
     try {
@@ -49,14 +48,14 @@ router.post('/login', async (req, res) => {
             return res.status(400).json({ msg: 'Invalid Credentials' });
         }
 
-        const isMatch = await bcrypt.compare(password, user.password);
+        const isMatch = await compare(password, user.password);
         if (!isMatch) {
             return res.status(400).json({ msg: 'Invalid Credentials' });
         }
 
         const payload = { user: { id: user.id } };
 
-        jwt.sign(
+        sign(
             payload,
             process.env.JWT_SECRET || 'secret',
             { expiresIn: 360000 },
@@ -72,7 +71,7 @@ router.post('/login', async (req, res) => {
 });
 
 
-router.get('/user', auth, async (req, res) => {
+authRouter.get('/user', requireAuth, async (req, res) => {
     try {
         const user = await User.findById(req.user.id).select('-password');
         res.json(user);
@@ -82,4 +81,4 @@ router.get('/user', auth, async (req, res) => {
     }
 });
 
-module.exports = router;
+export default authRouter;
